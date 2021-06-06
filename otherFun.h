@@ -16,6 +16,7 @@ int readn(std::shared_ptr<channel> _channel,char *buff,int length);
 int writen(std::shared_ptr<channel> _channel,char *buff,int length);
 int co_readn(std::shared_ptr<channel> _channel,char *buff,int length);
 int co_writen(std::shared_ptr<channel> _channel,char *buff,int length);
+int sysreadn(std::shared_ptr<channel> _channel,char *buff,int length);
 
 int set_noblock(int);
 int set_block(int);

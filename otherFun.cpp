@@ -32,10 +32,9 @@ int Maccept(SP_channel _channel,char *buff,int length)
             else
             {
                 Epoll* event_epoll = _channel->event_loop_thread_pool->GetNextEventEpollFd();
-                event_epoll->event_channel->Add_New_Connect(connfd);
                 //唤醒被分配fd的线程
-                uint32_t wake_up_message = 1;
-                //write(event_epoll->event_channel->fd, &wake_up_message, sizeof(uint32_t));
+                uint64_t wake_up_message = connfd;
+                write(event_epoll->event_channel->fd, &wake_up_message, sizeof(uint64_t));
             }
         }
         else
@@ -84,6 +83,38 @@ int readn(SP_channel _channel,char *buff,int length)
 #endif
             //对端关闭连接或者连接异常断开
             _channel->handle_close();
+            return 0;
+        }
+    }
+    return read_len;
+}
+
+int sysreadn(SP_channel _channel,char *buff,int length)
+{
+    memset(buff,0,length);
+    int read_len = 0;
+    while(length > 0)
+    {
+        int rlen = read(_channel->fd,buff,length);
+        if(rlen < 0)
+        {
+            if(errno == EAGAIN)
+            {
+                break;
+            }
+            else if(errno == EINTR)
+            {
+                continue;
+            }
+        }
+        else if(rlen > 0)
+        {
+            length = length - rlen;
+            buff = buff + rlen;
+            read_len += rlen;
+        }
+        else
+        {
             return 0;
         }
     }
