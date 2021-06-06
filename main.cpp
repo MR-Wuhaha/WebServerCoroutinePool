@@ -43,7 +43,7 @@ int main(int argv,char** argc)
 
 
     //创建一个时间轮，参数为时间轮的最大定时时间间隔
-    TimeRound<channel>* t;
+    TimeRound<channel>* t = NULL;
 #if 1
     TimeRound<channel> time_round = TimeRound<channel>(15);
     time_round.start();
