@@ -34,7 +34,7 @@ class channel:public enable_shared_from_this<channel>
         std::weak_ptr<TimeRoundItem<channel>> wp_time_round_item;
         //用于分配新连接的线程池，每个线程池中运行多个协程
         EventLoopThreadPool* event_loop_thread_pool;
-        //每个channel都在一个协程中，每个协程运行结束都要回收资源，因此需要找到当时的协程信息，并放入到EventLoop中即将回收的vec中
+        //唤醒的时候需要根据是否是event_fd处理不同的事件
         EventLoop* event_loop;
     public:
         friend class Epoll;
@@ -57,6 +57,7 @@ class channel:public enable_shared_from_this<channel>
         friend int writen(SP_channel _channel,char *buff,int length);
         friend int co_readn(SP_channel _channel,char *buff,int length);
         friend int co_writen(SP_channel _channel,char *buff,int length);
+        friend int sysreadn(SP_channel _channel,char *buff,int length);
         virtual void Add_New_Connect(int);
         int get_fd();
         virtual void SeparateTimer();
