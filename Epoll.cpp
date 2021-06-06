@@ -62,9 +62,12 @@ vector<SP_channel> Epoll::Poll()
                 read(event_channel->fd, wake_up_message, sizeof(wake_up_message));
                 continue;
             }
-            Mmap[event_fd[i].data.fd]->Revent = event_fd[i].events;
-            Mmap[event_fd[i].data.fd]->epevent = event_fd[i];
-            result.push_back(Mmap[event_fd[i].data.fd]);
+            if(Mmap.find(event_fd[i].data.fd) != Mmap.end())
+            {
+                Mmap[event_fd[i].data.fd]->Revent = event_fd[i].events;
+                Mmap[event_fd[i].data.fd]->epevent = event_fd[i];
+                result.push_back(Mmap[event_fd[i].data.fd]);
+            }
         }
         return result;
     }
