@@ -9,6 +9,21 @@ Keep_Alive(false)
 
 int Httpdata::handle_event()
 {
+    if(attach_epoll->event_channel.get() && attach_epoll->event_channel->get_fd() == this->fd)
+    {
+        uint64_t new_connect_fd;
+        HandleRead();
+        if(read_length > 0)
+        {
+            uint64_t* uint64buff = (uint64_t*)(read_buff);
+            for(int i = 0;i < read_length;i = i+sizeof(uint64_t))
+            {
+                new_connect_fd = uint64buff[i/8];
+                Add_New_Connect(new_connect_fd);
+            }
+        }
+        return 0;
+    }
     HandleRead();//这里没有参与协程，因为唤醒必定有数据，所以采用非阻塞读取的方式
     if(read == co_readn || read == readn)
     {
