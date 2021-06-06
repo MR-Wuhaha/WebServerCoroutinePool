@@ -7,6 +7,10 @@ Epoll::Epoll(int _size):size(_size),event_fd(size)
     assert(epfd > 0);
 }
 
+int Epoll::GetEventFd()
+{
+    return epfd;
+}
 
 int Epoll::Epoll_Add(SP_channel _channel,bool accept_flag)
 {
@@ -55,13 +59,6 @@ vector<SP_channel> Epoll::Poll()
         vector<SP_channel> result;
         for(int i = 0; i<event_count ;i++)
         {
-            if(event_channel.get() != nullptr && event_fd[i].data.fd == event_channel->fd)
-            {
-                //是唤醒线程的信息，只读，不进行其他操作
-                char wake_up_message[1024];
-                read(event_channel->fd, wake_up_message, sizeof(wake_up_message));
-                continue;
-            }
             if(Mmap.find(event_fd[i].data.fd) != Mmap.end())
             {
                 Mmap[event_fd[i].data.fd]->Revent = event_fd[i].events;

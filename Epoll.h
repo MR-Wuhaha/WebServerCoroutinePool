@@ -20,6 +20,7 @@ class Epoll
         int Epoll_Add(SP_channel,bool);
         int Epoll_Del(int fd);
         int Epoll_Mod(SP_channel);
+        int GetEventFd();
         vector<SP_channel> Poll();
 };
 
