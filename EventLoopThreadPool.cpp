@@ -24,7 +24,7 @@ void EventLoopThreadPool::start()
             printf("Invalid Eventfd\n");
             assert(0);
         }
-        SP_channel event_channel = make_shared<Httpdata>(event_fd, EPOLLIN | EPOLLET, nullptr, nullptr, time_round);
+        SP_channel event_channel = make_shared<Httpdata>(event_fd, EPOLLIN | EPOLLET, sysreadn, nullptr, time_round);
         mepoll->event_channel = event_channel;
         mepoll->Epoll_Add(event_channel, false);
         Epolls.push_back(mepoll);
